@@ -1,52 +1,48 @@
 <template>
   <div class="header wrapper">
-    <UiToastList/>
-
     <div class="menu-wrapper">
       <ul class="menu">
-        <li>
-          <router-link :to="{ name: 'index' }" exact>Home</router-link>
-        </li>
-        <li>
-          <router-link :to="{ name: 'news' }">News</router-link>
-        </li>
-      </ul>
-      <ul class="menu side">
-        <li v-if="!$currentUser.id">
-          <router-link :to="{ name: 'login' }">login</router-link>
-        </li>
-        <li v-if="$currentUser.id">
-          <router-link :to="{ name: 'profile' }">profile</router-link>
-        </li>
-        <li v-if="$currentUser.id"><span class="logout-button" @click="logout()">logout</span></li>
-        <li>
-          <UiHeaderDropdownMenu/>
-        </li>
+        <li>Home</li>
+        <li :style="`color: ${statusColor}`">{{statusText}}</li>
       </ul>
     </div>
-
   </div>
-
 </template>
 
 <script>
-import * as authService from '../services/auth.service'
+import * as authService from "../services/auth.service";
 
-import UiHeaderDropdownMenu from '@/components/UiHeaderDropdownMenu.vue'
-import UiToastList from '@/components/UiToastList'
-
+import { mapState, mapGetters } from "vuex";
 export default {
-  name: 'Header',
-  components: {
-    UiToastList,
-    UiHeaderDropdownMenu
+  name: "Header",
+  data() {
+    return {
+      polling: null
+    };
+  },
+  computed: {
+    ...mapGetters({
+      statusText: "status/statusText",
+      statusColor: "status/statusColor"
+    })
   },
   methods: {
-    logout () {
-      authService.makeLogout()
+    created() {
+      this.pollData();
+    },
+    beforeDestroy() {
+      clearInterval(this.polling);
+    },
+    pollData() {
+      this.polling = setInterval(() => {
+        this.$store.dispatch("status/retriveStateData");
+      }, 3000);
     }
+  },
+  created() {
+    this.pollData();
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>
@@ -79,7 +75,6 @@ export default {
 
     li {
       padding: 15px;
-
     }
 
     &.side {

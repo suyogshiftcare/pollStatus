@@ -1,25 +1,15 @@
 <template>
   <div id="app">
     <AppHeader></AppHeader>
-    <div class="wrapper">
-      <transition name="fade">
-        <router-view></router-view>
-      </transition>
-    </div>
-    <AppFooter></AppFooter>
   </div>
-
 </template>
 
 <script>
-import AppHeader from './Header.vue'
-import AppFooter from './Footer.vue'
-
+import AppHeader from "./Header.vue";
 export default {
-  name: 'AppLayout',
+  name: "AppLayout",
   components: {
-    AppHeader,
-    AppFooter
+    AppHeader
   }
-}
-</script>s
+};
+</script>
